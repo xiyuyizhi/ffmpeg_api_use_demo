@@ -37,11 +37,13 @@ int main(int argc, char *argv[])
     AVStream *s = fmt_context->streams[i];
     AVCodecParameters *p = s->codecpar;
     // AVCodecParameters
-    printf("  stream info: index=%d,id=%d,codec_type=%d,codec_id=%d,"
+    printf("  stream info: index=%d,id=%d,time_base.num=%d,time_base.en=%d,codec_type=%d,codec_id=%d,"
            ",nb_side_data=%d,width=%d,height=%d,"
            "bit_rate=%lld,profile=%d,level=%d,channels=%d,frame_size=%d,sample_rate=%d\n",
            s->index,
            s->id,
+           s->time_base.num,
+           s->time_base.den,
            p->codec_type,
            p->codec_id,
            s->nb_side_data,
