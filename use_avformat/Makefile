@@ -1,6 +1,10 @@
-default_target: all
+default_target: AvPcket
 
-all:
-	clang about_AvFormatContext.c -lavformat
+AvFormatContext:
+	clang 1_about_AvFormatContext.c -lavformat -o demo
+
+AvPcket:
+	clang 2_about_AvPacket.c -lavformat -o demo
+
 clean: 
-	rm *.out
+	rm demo
