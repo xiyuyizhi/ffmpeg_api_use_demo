@@ -1,4 +1,8 @@
 .DS_Store
 .vscode/
+_temp
 demo
-out
+libs1
+libs2
+libs3
+test.c
