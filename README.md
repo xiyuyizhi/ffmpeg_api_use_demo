@@ -8,6 +8,8 @@
 
 - [ffmpeg 编译、调试]()
 
-- [seek 的坑 fuck。。。]()
+- [seek 的坑 。。。]()
 
 - [c 内存管理相关]()
+
+- [pthread 在 WebAssembly 中使用]()
