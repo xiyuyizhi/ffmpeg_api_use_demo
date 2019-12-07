@@ -1,11 +1,28 @@
+#ifndef BASE_STRUCTS
+#define BASE_STRUCTS
+
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
+#include "libswscale/swscale.h"
+#include "libavutil/avutil.h"
 
 typedef struct _GlobalState
 {
   AVFormatContext *fmtCtx;
   AVFrame *frame;
   AVPacket pkt;
+  struct SwsContext *swsCtx;
+  int videoStreamIndex;
+  int audioStreamIndex;
+  size_t videoTsDen;
+  size_t audioTsDen;
+  int64_t videoStartPts;
+  int64_t audioStartPts;
+  int endOfFile;
+  int maxDecodeOnce;
+  int rgbaSize;
+  uint8_t *dst_data[4];
+  int dst_linesize[4];
 } GlobalState;
 
 typedef struct _StreamState
@@ -24,3 +41,15 @@ typedef struct _BufferData
   size_t size; // size left in buffer
   size_t file_size;
 } BufferData;
+
+enum Error_Code
+{
+  OPEN_FILE_ERROR = -1,
+  FIND_STREAM_INFO_ERROR = -2,
+  FIND_BEST_STREAM_ERROR = -3,
+  OPEN_DECODE_CONTEXT_ERROR = -4,
+  AVFRAME_ALLOC_ERROR = -5,
+  SWSCTX_ALLOC_ERROT = -6
+};
+
+#endif

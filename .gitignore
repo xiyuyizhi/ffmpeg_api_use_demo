@@ -1,5 +1,6 @@
 .DS_Store
 .vscode/
+demo.dSYM/
 _temp
 demo
 libs1
