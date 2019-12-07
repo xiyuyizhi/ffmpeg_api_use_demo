@@ -1,5 +1,7 @@
 #include "structs.h"
 #include "base.h"
+#include <string.h>
+#include <stdio.h>
 
 static GlobalState gState;
 static StreamState videoState;
@@ -19,6 +21,7 @@ clean()
   {
     av_frame_free(&gState.frame);
   }
+
   if (gState.dst_data[0])
   {
     av_freep(&gState.dst_data[0]);
@@ -95,7 +98,24 @@ int decode_video_frame()
 
   } while (!gState.endOfFile && decode_count < gState.maxDecodeOnce);
 
+  av_packet_unref(pkt);
+
   return decode_count;
+}
+
+write_rgba_to_file(unsigned char *buff, int size, int width, int height, int64_t pts)
+{
+  char *s[20];
+  char *s1 = "_temp/";
+  sprintf(s, "%lld", pts);
+  char *filePath = malloc(strlen(s1) + strlen(s) + 1);
+  strcpy(filePath, s1);
+  strcat(filePath, s);
+
+  FILE *file = fopen(filePath, "wb");
+  fwrite(buff, 1, size, file);
+  fclose(file);
+  free(filePath);
 }
 
 int main(int argc, char *argv[])
@@ -116,6 +136,7 @@ int main(int argc, char *argv[])
   }
   gState.endOfFile = 0;
   gState.maxDecodeOnce = atoi(argv[2]);
+  gState.videoCallback = &write_rgba_to_file;
 
   av_dump_format(gState.fmtCtx, "", NULL, NULL);
 
@@ -125,7 +146,7 @@ int main(int argc, char *argv[])
     goto Error;
   }
 
-  result = init_some_gobal_state(&gState, &videoState);
+  result = init_some_gobal_state(&gState, &videoState, AVMEDIA_TYPE_VIDEO);
   if (result < 0)
   {
     goto Error;
@@ -133,13 +154,13 @@ int main(int argc, char *argv[])
 
   t1 = getCurrentTime();
   result = decode_video_frame();
-  printf("decode count:%d,take=%d\n", result, getCurrentTime() - t1);
+  printf("decode count:%d,take=%lld\n", result, getCurrentTime() - t1);
 
   while ((c = getchar()) != '0' && result == gState.maxDecodeOnce)
   {
     t1 = getCurrentTime();
     result = decode_video_frame();
-    printf("decode count:%d,take=%d\n", result, getCurrentTime() - t1);
+    printf("decode count:%d,take=%lld\n", result, getCurrentTime() - t1);
   }
 
 Error:

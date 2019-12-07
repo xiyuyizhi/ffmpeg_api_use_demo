@@ -6,6 +6,11 @@
 #include "libswscale/swscale.h"
 #include "libavutil/avutil.h"
 
+typedef void (*VideoFrameCallback)(unsigned char *buff, int size, int width, int height, int64_t pts);
+typedef void (*AudioFrameCallback)(unsigned char *buff, int size, int64_t pts);
+typedef void (*VideoMetadataCallback)(int width, int height, int profile, int level, int timescale, long duration, int64_t start_time);
+typedef void (*AudioMetadataCallback)(int channels, int sample_rate, int timescale, long duration, int64_t start_time);
+
 typedef struct _GlobalState
 {
   AVFormatContext *fmtCtx;
@@ -18,11 +23,17 @@ typedef struct _GlobalState
   size_t audioTsDen;
   int64_t videoStartPts;
   int64_t audioStartPts;
+  int64_t lastVideoPts;
+  int64_t lastAudioPts;
   int endOfFile;
   int maxDecodeOnce;
   int rgbaSize;
+  int sampleRate;
+  int channels;
   uint8_t *dst_data[4];
   int dst_linesize[4];
+  VideoFrameCallback videoCallback;
+  AudioFrameCallback audioCallback;
 } GlobalState;
 
 typedef struct _StreamState

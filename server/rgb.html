@@ -1,0 +1,33 @@
+<html>
+  <head></head>
+  <body>
+    <canvas style="width: 500px"></canvas>
+  </body>
+  <script>
+    const width = 1280;
+    const height = 720;
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    const pts = location.search.slice(1);
+    canvas.width = width;
+    canvas.height = height;
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const d = imageData.data;
+
+    fetch(`../_temp/${pts}`)
+      .then(res => {
+        if (res.status >= 200 && res.status < 300) {
+          return res;
+        }
+        throw new Error(res.statusText);
+      })
+      .then(res => res.arrayBuffer())
+      .then(buffer => {
+        const uint8 = new Uint8Array(buffer);
+        for (let i = 0, len = buffer.byteLength; i < len; i++) {
+          d[i] = uint8[i];
+        }
+        ctx.putImageData(imageData, 0, 0);
+      });
+  </script>
+</html>
