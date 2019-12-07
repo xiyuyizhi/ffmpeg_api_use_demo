@@ -1,0 +1,50 @@
+<html>
+  <head></head>
+  <body>
+    <button>play</button>
+  </body>
+  <script>
+    // 采样率 44100, 两个 channel
+
+    document.querySelector('button').addEventListener('click', () => {
+      fetch('../_temp/1.pcm')
+        .then(res => {
+          if (res.status >= 200 && res.status < 300) {
+            return res;
+          }
+          throw new Error(res.statusText);
+        })
+        .then(res => res.arrayBuffer())
+        .then(buffer => {
+          // the generated pcm data style : f32le LRLRLRLRLR....
+          const audioCtx = new window.AudioContext();
+          const dataView = new DataView(buffer);
+          const byteLength = buffer.byteLength;
+          const sampleCount = byteLength / 4 / 2;
+          const audioBuffer = audioCtx.createBuffer(2, sampleCount, 44100);
+          const channels = [
+            audioBuffer.getChannelData(0),
+            audioBuffer.getChannelData(1)
+          ];
+          audioCtx.suspend();
+
+          // switch to LLLLLLLLRRRRRRRR.....
+          for (let i = 0, len = sampleCount; i < len; i++) {
+            for (let c = 0; c < 2; c++) {
+              channels[c][i] = dataView.getFloat32(i * 8 + 4 * c, true);
+            }
+          }
+
+          audioCtx.resume();
+          const source = audioCtx.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(audioCtx.destination);
+          source.start();
+          source.onended = () => {
+            console.log('play finish,currentTime:', audioCtx.currentTime);
+            audioCtx.close();
+          };
+        });
+    });
+  </script>
+</html>
