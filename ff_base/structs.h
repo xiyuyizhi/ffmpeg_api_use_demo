@@ -43,6 +43,8 @@ typedef struct _GlobalState
   int dst_linesize[4];
   VideoFrameCallback videoCallback;
   AudioFrameCallback audioCallback;
+  VideoMetadataCallback vMetaCallback;
+  AudioMetadataCallback aMetaCallback;
 } GlobalState;
 
 typedef struct _StreamState
