@@ -1,5 +1,7 @@
 #include "./base.h"
 
+#define IO_CTX_BUFFER_SIZE 4096 * 4
+
 char *concat_strarray(char *sarr[], int len)
 {
   char *ret = NULL;
@@ -23,6 +25,31 @@ long getCurrentTime()
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
+
+remove_all_temp_rgb(char *s)
+{
+  DIR *folder;
+  struct dirent *entry;
+  folder = opendir(s);
+  if (!folder)
+    return -1;
+  while (entry = readdir(folder))
+  {
+    char *suffix = malloc(4);
+    int len = strlen(entry->d_name);
+    memcpy(suffix, entry->d_name + len - 4, 4);
+    if (strcmp(suffix, ".rgb") == 0)
+    {
+      char *fileName = malloc(strlen(s) + len + 1);
+      strcat(fileName, s);
+      strcat(fileName, entry->d_name);
+      remove(fileName);
+      free(fileName);
+    }
+    free(suffix);
+  }
+  closedir(folder);
 }
 
 enum Error_Code init_demuxer(char *fileName, GlobalState *gState)
@@ -51,6 +78,63 @@ enum Error_Code init_demuxer(char *fileName, GlobalState *gState)
     }
   }
   return 0;
+}
+
+static int read_packet(void *opaque, uint8_t *buf, int buf_size)
+{
+  BufferData *bd = (BufferData *)opaque;
+  buf_size = MIN(bd->size, buf_size);
+
+  if (!buf_size)
+  {
+    printf("no buf_size pass to read_packet,%d,%d\n", buf_size, bd->size);
+    return -1;
+  }
+  memcpy(buf, bd->ptr, buf_size);
+  bd->ptr += buf_size;
+  bd->size -= buf_size; // left size in buffer
+  return buf_size;
+}
+
+static int64_t seek_in_buffer(void *opaque, int64_t offset, int whence)
+{
+  BufferData *bd = (BufferData *)opaque;
+  int64_t ret = -1;
+
+  switch (whence)
+  {
+  case AVSEEK_SIZE:
+    ret = bd->file_size;
+    break;
+  case SEEK_SET:
+    bd->ptr = bd->ori_ptr + offset;
+    bd->size = bd->file_size - offset;
+    ret = bd->ptr;
+    break;
+  }
+  return ret;
+}
+
+enum Error_Code init_demuber_use_customio(uint8_t *buffer, size_t buffer_size, GlobalState *gState)
+{
+  AVIOContext *avioCtx;
+  uint8_t *ioCtxBuffer = av_malloc(IO_CTX_BUFFER_SIZE);
+
+  gState->bd.file_size = buffer_size;
+  gState->bd.size = buffer_size;
+  gState->bd.ori_ptr = buffer;
+  gState->bd.ptr = buffer;
+  gState->fmtCtx = avformat_alloc_context();
+
+  avioCtx = avio_alloc_context(ioCtxBuffer, IO_CTX_BUFFER_SIZE, 0, &gState->bd, &read_packet, NULL, &seek_in_buffer);
+  if (!avioCtx)
+  {
+    return AVIO_ALLOC_ERROR;
+  }
+  gState->fmtCtx->pb = avioCtx;
+  gState->fmtCtx->flags |= AVFMT_FLAG_CUSTOM_IO;
+
+  return init_demuxer(NULL, gState);
 }
 
 enum Error_Code init_stream_decode_context(GlobalState *gState, StreamState *streamState, int streamType)

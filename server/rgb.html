@@ -4,8 +4,8 @@
     <canvas style="width: 500px"></canvas>
   </body>
   <script>
-    const width = 1280;
-    const height = 720;
+    const width = 1920;
+    const height = 1080;
     const canvas = document.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     const pts = location.search.slice(1);
@@ -14,7 +14,7 @@
     const imageData = ctx.getImageData(0, 0, width, height);
     const d = imageData.data;
 
-    fetch(`../_temp/${pts}`)
+    fetch(`../_temp/${pts}.rgb`)
       .then(res => {
         if (res.status >= 200 && res.status < 300) {
           return res;

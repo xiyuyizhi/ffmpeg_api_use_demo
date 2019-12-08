@@ -107,10 +107,12 @@ write_rgba_to_file(unsigned char *buff, int size, int width, int height, int64_t
 {
   char *s[20];
   char *s1 = "_temp/";
+  char *s2 = ".rgb";
   sprintf(s, "%lld", pts);
-  char *filePath = malloc(strlen(s1) + strlen(s) + 1);
+  char *filePath = malloc(strlen(s1) + strlen(s) + strlen(s2) + 1);
   strcpy(filePath, s1);
   strcat(filePath, s);
+  strcat(filePath, s2);
 
   FILE *file = fopen(filePath, "wb");
   fwrite(buff, 1, size, file);
@@ -128,6 +130,8 @@ int main(int argc, char *argv[])
     printf("Usage: ./demo filePath maxDecodeOnce !\n");
     return 0;
   }
+
+  remove_all_temp_rgb("_temp/");
 
   result = init_demuxer(argv[1], &gState);
   if (result < 0)
