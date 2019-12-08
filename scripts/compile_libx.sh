@@ -19,6 +19,11 @@ else
 
   sudo cp scripts/configure.sh ../FFmpeg/configure.sh
 
+  if [ ! -d "_media"];then
+    mkdir _media
+    mkdir _temp
+  fi
+
   sudo rm -rf libs1
 
   cd ../FFmpeg

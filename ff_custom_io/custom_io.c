@@ -11,15 +11,15 @@ clean()
     av_frame_free(&gState.frame);
   }
 
-  if (gState.dst_data[0])
-  {
-    av_freep(&gState.dst_data[0]);
-  }
-
   if (gState.fmtCtx->pb)
   {
     av_free(gState.fmtCtx->pb->buffer);
     avio_context_free(&gState.fmtCtx->pb);
+  }
+
+  if (gState.dst_data[0])
+  {
+    av_freep(&gState.dst_data[0]);
   }
 
   if (gState.fmtCtx)

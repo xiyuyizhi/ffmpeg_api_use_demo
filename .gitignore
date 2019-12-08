@@ -2,6 +2,7 @@
 .vscode/
 demo.dSYM/
 _temp
+_media
 demo
 libs1
 libs2

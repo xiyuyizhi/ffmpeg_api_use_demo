@@ -101,6 +101,8 @@ static int64_t seek_in_buffer(void *opaque, int64_t offset, int whence)
   BufferData *bd = (BufferData *)opaque;
   int64_t ret = -1;
 
+  // printf("whence=%d , offset=%lld , file_size=%ld\n", whence, offset, bd->file_size);
+
   switch (whence)
   {
   case AVSEEK_SIZE:

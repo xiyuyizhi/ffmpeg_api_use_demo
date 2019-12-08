@@ -1,4 +1,4 @@
-default_target: CustomIo
+default_target: Seek
 
 DecodeVideo:
 	clang  ff_base/base.c ff_decode_video/decode_video.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
@@ -8,3 +8,6 @@ DecodeAudio:
 
 CustomIo:
 	clang  ff_base/base.c ff_custom_io/custom_io.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
+
+Seek:
+	clang  ff_base/base.c ff_seek/seek.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
