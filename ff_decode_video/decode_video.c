@@ -80,6 +80,7 @@ int decode_video_frame()
       }
       else if (resolve_video_frame(&gState, videoState.codecCtx, frame) >= 0)
       {
+        printf("%lld \n", frame->pts);
         decode_count++;
       }
       if (gState.endOfFile)

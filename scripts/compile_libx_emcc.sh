@@ -19,7 +19,7 @@ else
 
   sudo cp scripts/configure_with_emcc.sh ../FFmpeg/configure_with_emcc.sh
 
-  sudo rm -rf libs3
+  sudo rm -rf libs2
 
   cd ../FFmpeg
   sudo make clean

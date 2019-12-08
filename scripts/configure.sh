@@ -2,8 +2,8 @@
 
 ./configure --prefix=$(pwd)/../ffmpeg_api_use_demo/libs1 \
 --cpu=generic --target-os=none --arch=x86_64 \
---extra-cflags="-O2" \
 --enable-small \
+--extra-cflags=-Os \
 --enable-cross-compile \
 --disable-inline-asm \
 --disable-ffmpeg \
@@ -20,8 +20,8 @@
 --disable-avdevice \
 --disable-swresample \
 --disable-avfilter \
---disable-videotoolbox \
 --disable-logging \
+--disable-videotoolbox \
 --disable-postproc \
 --disable-pthreads \
 --disable-os2threads \
@@ -29,8 +29,11 @@
 --disable-network \
 --disable-debug \
 --disable-everything \
---enable-protocol=file \
+--disable-parser=hevc \
 --enable-protocol=data \
---enable-parser=hevc \
+--enable-protocol=file \
 --enable-decoder=aac --enable-decoder=h264 --enable-decoder=hevc \
 --enable-demuxer=mov --enable-demuxer=mpegts
+
+# --extra-cflags=-g \
+# --extra-ldflags=-g \

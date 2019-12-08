@@ -1,4 +1,4 @@
-default_target: Seek
+default_target: Wasm
 
 DecodeVideo:
 	clang  ff_base/base.c ff_decode_video/decode_video.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
@@ -11,3 +11,6 @@ CustomIo:
 
 Seek:
 	clang  ff_base/base.c ff_seek/seek.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
+
+Wasm:
+	clang  ff_base/base.c ff_wasm/decode.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo

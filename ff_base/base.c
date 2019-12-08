@@ -2,24 +2,6 @@
 
 #define IO_CTX_BUFFER_SIZE 4096 * 4
 
-char *concat_strarray(char *sarr[], int len)
-{
-  char *ret = NULL;
-  int size = 0;
-
-  for (int i = 0; i < len; i++)
-  {
-    size += strlen(sarr[i]);
-  }
-  ret = malloc(size + 1);
-  *ret = '\0';
-  for (int i = 0; i < len; i++)
-  {
-    strcat(ret, sarr[i]);
-  }
-  return ret;
-}
-
 long getCurrentTime()
 {
   struct timeval tv;
@@ -27,7 +9,7 @@ long getCurrentTime()
   return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-remove_all_temp_rgb(char *s)
+int remove_all_temp_rgb(char *s)
 {
   DIR *folder;
   struct dirent *entry;
