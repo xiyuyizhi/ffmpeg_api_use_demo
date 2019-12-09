@@ -7,8 +7,11 @@
 static GlobalState gState;
 static StreamState videoState;
 static StreamState audioState;
+
+#ifdef MAIN_RUN
 static FILE *pcmFile;
 static char *pcmPath = "_temp/1.pcm";
+#endif
 
 clean()
 {
@@ -44,13 +47,15 @@ clean()
     avcodec_close(videoState.codecCtx);
     avcodec_free_context(&videoState.codecCtx);
   }
+#ifdef MAIN_RUN
   if (pcmFile)
   {
     fclose(pcmFile);
   }
+#endif
 }
 
-int initCallback(long vMeta, long aMeta, long v, long a)
+int init_callback(long vMeta, long aMeta, long v, long a)
 {
   gState.videoCallback = v;
   gState.audioCallback = a;
@@ -70,6 +75,10 @@ int init_video_context(int *result)
 
   gState.videoStartPts = videoState.stream->start_time;
   gState.videoTsDen = videoState.stream->time_base.den;
+
+#ifdef USE_THREAD
+  videoState.codecCtx->thread_count = 3;
+#endif
 
   if (gState.decodeMode == 3)
   {
@@ -128,11 +137,76 @@ enum Error_Code init(char *buffer, size_t buffer_size, int decodeMode)
   gState.decodeMode = decodeMode;
 
   result = init_process_context();
+  if (result < 0)
+    return result;
+
+  result = init_some_gobal_state(&gState, &videoState, AVMEDIA_TYPE_VIDEO);
   return result;
 }
 
-#ifdef MAIN_RUN
+int frame_process()
+{
+  int decode_count = 0;
+  int result = 0;
+  AVPacket *pkt = &gState.pkt;
+  AVFrame *frame = gState.frame;
 
+  do
+  {
+    if (!gState.endOfFile)
+    {
+      if (av_read_frame(gState.fmtCtx, pkt) < 0)
+      {
+        gState.endOfFile = 1;
+      }
+    }
+
+    if (gState.endOfFile == 1)
+    {
+      printf("mode: %d, end of stream....\n", gState.decodeMode);
+      pkt->data = NULL;
+      pkt->size = 0;
+    }
+
+    if (gState.decodeMode == 1 && pkt->stream_index == gState.videoStreamIndex)
+    {
+      result = avcodec_send_packet(videoState.codecCtx, pkt);
+      if (result != 0)
+      {
+        printf("Error: avcodec_send_packet,%d\n", result);
+      }
+      else if (resolve_video_frame(&gState, videoState.codecCtx, frame) >= 0)
+      {
+        printf("%lld \n", frame->pts);
+        decode_count++;
+      }
+      if (gState.endOfFile)
+      {
+        //flush frame
+        while (result == 0)
+        {
+          result = resolve_video_frame(&gState, videoState.codecCtx, frame);
+          decode_count++;
+        }
+      }
+    }
+
+    if (gState.decodeMode == 2 && pkt->stream_index == gState.audioStreamIndex)
+    {
+      resolve_audio_frame(&gState, audioState.codecCtx, frame, pkt, &decode_count);
+    }
+
+    av_packet_unref(pkt);
+    av_init_packet(pkt);
+
+  } while (!gState.endOfFile && decode_count < gState.maxDecodeOnce);
+
+  av_packet_unref(pkt);
+
+  return decode_count;
+}
+
+#ifdef MAIN_RUN
 void vFrameCallback(unsigned char *buff, int size, int width, int height, int64_t pts)
 {
   char *s[20];
@@ -161,7 +235,7 @@ void aFrameCallback(unsigned char *buff, int size, int64_t pts)
 
 void vMetaCallback(int width, int height, int profile, int level, int timescale, int64_t start_time)
 {
-  printf("video Metadata: width=%d,height=%d,profile=%d,level=%d,timescale=%d,start_time=%lld\n",
+  printf("Video Metadata: width=%d,height=%d,profile=%d,level=%d,timescale=%d,start_time=%lld\n",
          width,
          height,
          profile,
@@ -172,7 +246,7 @@ void vMetaCallback(int width, int height, int profile, int level, int timescale,
 
 void aMetaCallback(int channels, int sample_rate, int timescale, int64_t start_time)
 {
-  printf("audio Metadata: channels=%d,sample_rate=%d,timescle=%d,start_time=%lld\n",
+  printf("Audio Metadata: channels=%d,sample_rate=%d,timescle=%d,start_time=%lld\n",
          channels,
          sample_rate,
          timescale,
@@ -181,29 +255,37 @@ void aMetaCallback(int channels, int sample_rate, int timescale, int64_t start_t
 
 int main(int argc, char *argv[])
 {
-  if (argc < 3)
+  if (argc < 4)
   {
-    printf("Usage: ./demo filePath xxx! \n");
+    printf("Usage: ./demo filePath mode decodeCount! \n");
     return 0;
   }
+
+  remove_all_temp_rgb("_temp/");
 
   char *buffer;
   size_t buffer_size;
   int result;
-  int mode = 3;
+  int mode = atoi(argv[2]);
+
+  gState.maxDecodeOnce = atoi(argv[3]);
+
   result = av_file_map(argv[1], &buffer, &buffer_size, 0, NULL);
   if (result < 0)
   {
     goto Error;
   }
 
-  initCallback(&vMetaCallback, &aMetaCallback, &vFrameCallback, &aFrameCallback);
+  init_callback(&vMetaCallback, &aMetaCallback, &vFrameCallback, &aFrameCallback);
 
   result = init(buffer, buffer_size, mode);
-  if (result < 0)
+  if (result < 0 || mode == 3)
   {
     goto Error;
   }
+
+  result = frame_process();
+  printf("decode count:%d\n", result);
 
 Error:
   if (result < 0)
@@ -214,3 +296,10 @@ Error:
   clean();
 }
 #endif
+
+// ./demo _media/1.ts 1 10  decode 10 video frame
+// ./demo _media/1.ts 2 1000  decode 100 audio frame
+// ./demo _media/1.ts 3 0  no decode frame,only dump metadata info
+
+// exported wasm method
+// 1.init_callback() 2.init() 3.frame_process() 4.clean()

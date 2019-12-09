@@ -138,10 +138,6 @@ enum Error_Code init_stream_decode_context(GlobalState *gState, StreamState *str
   streamState->streamIndex = streamIndex;
   streamState->stream = gState->fmtCtx->streams[streamIndex];
   streamState->params = streamState->stream->codecpar;
-  if (streamType == AVMEDIA_TYPE_VIDEO)
-  {
-    streamState->codecCtx->thread_count = 3;
-  }
 
   result = avcodec_parameters_to_context(streamState->codecCtx, streamState->params);
   if (result < 0)
