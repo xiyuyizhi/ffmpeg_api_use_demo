@@ -99,7 +99,7 @@ static int64_t seek_in_buffer(void *opaque, int64_t offset, int whence)
   return ret;
 }
 
-enum Error_Code init_demuber_use_customio(uint8_t *buffer, size_t buffer_size, GlobalState *gState)
+enum Error_Code init_demuxer_use_customio(uint8_t *buffer, size_t buffer_size, GlobalState *gState)
 {
   AVIOContext *avioCtx;
   uint8_t *ioCtxBuffer = av_malloc(IO_CTX_BUFFER_SIZE);

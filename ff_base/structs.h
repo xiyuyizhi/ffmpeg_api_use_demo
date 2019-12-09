@@ -8,8 +8,8 @@
 
 typedef void (*VideoFrameCallback)(unsigned char *buff, int size, int width, int height, int64_t pts);
 typedef void (*AudioFrameCallback)(unsigned char *buff, int size, int64_t pts);
-typedef void (*VideoMetadataCallback)(int width, int height, int profile, int level, int timescale, long duration, int64_t start_time);
-typedef void (*AudioMetadataCallback)(int channels, int sample_rate, int timescale, long duration, int64_t start_time);
+typedef void (*VideoMetadataCallback)(int width, int height, int profile, int level, int timescale, int64_t start_time);
+typedef void (*AudioMetadataCallback)(int channels, int sample_rate, int timescale, int64_t start_time);
 
 typedef struct _BufferData
 {
@@ -39,6 +39,7 @@ typedef struct _GlobalState
   int rgbaSize;
   int sampleRate;
   int channels;
+  int decodeMode;
   uint8_t *dst_data[4];
   int dst_linesize[4];
   VideoFrameCallback videoCallback;

@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   }
   printf("file size:%.3fM\n", (float)buffer_size / 1024 / 1024);
 
-  result = init_demuber_use_customio(buffer, buffer_size, &gState);
+  result = init_demuxer_use_customio(buffer, buffer_size, &gState);
   if (result < 0)
   {
     goto Error;
