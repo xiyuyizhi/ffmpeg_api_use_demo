@@ -2,6 +2,9 @@
 #ifndef BASE_BASE
 #define BASE_BASE
 
+#define MAIN_RUN
+#define USE_THREAD
+
 #include <time.h>
 #include <dirent.h>
 #include "structs.h"

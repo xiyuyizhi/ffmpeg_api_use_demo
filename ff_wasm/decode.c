@@ -1,8 +1,6 @@
+
 #include "structs.h"
 #include "base.h"
-
-#define MAIN_RUN
-#define USE_THREAD
 
 static GlobalState gState;
 static StreamState videoState;
@@ -15,6 +13,7 @@ static char *pcmPath = "_temp/1.pcm";
 
 clean()
 {
+  printf("clean.... \n");
   if (gState.frame)
   {
     av_frame_free(&gState.frame);
@@ -76,10 +75,6 @@ int init_video_context(int *result)
   gState.videoStartPts = videoState.stream->start_time;
   gState.videoTsDen = videoState.stream->time_base.den;
 
-#ifdef USE_THREAD
-  videoState.codecCtx->thread_count = 3;
-#endif
-
   if (gState.decodeMode == 3)
   {
     gState.vMetaCallback(
@@ -118,10 +113,16 @@ int init_audio_context(int *result)
 enum Error_Code init_process_context()
 {
   int result = 0;
-  init_video_context(&result);
+  if (gState.decodeMode == 1 || gState.decodeMode == 3)
+  {
+    init_video_context(&result);
+  }
   if (result < 0)
     return result;
-  init_audio_context(&result);
+  if (gState.decodeMode == 2 || gState.decodeMode == 3)
+  {
+    init_audio_context(&result);
+  }
   return result;
 }
 
@@ -140,7 +141,12 @@ enum Error_Code init(char *buffer, size_t buffer_size, int decodeMode)
   if (result < 0)
     return result;
 
-  result = init_some_gobal_state(&gState, &videoState, AVMEDIA_TYPE_VIDEO);
+  if (gState.decodeMode == 3)
+  {
+    return 0;
+  }
+
+  result = init_some_gobal_state(&gState, &videoState, gState.decodeMode == 1 ? AVMEDIA_TYPE_VIDEO : -1);
   return result;
 }
 
@@ -177,7 +183,6 @@ int frame_process()
       }
       else if (resolve_video_frame(&gState, videoState.codecCtx, frame) >= 0)
       {
-        printf("%lld \n", frame->pts);
         decode_count++;
       }
       if (gState.endOfFile)
@@ -202,7 +207,10 @@ int frame_process()
   } while (!gState.endOfFile && decode_count < gState.maxDecodeOnce);
 
   av_packet_unref(pkt);
-
+  if (gState.endOfFile)
+  {
+    clean();
+  }
   return decode_count;
 }
 
@@ -261,6 +269,7 @@ int main(int argc, char *argv[])
     return 0;
   }
 
+  remove(pcmPath);
   remove_all_temp_rgb("_temp/");
 
   char *buffer;
@@ -283,9 +292,9 @@ int main(int argc, char *argv[])
   {
     goto Error;
   }
-
+  long t1 = getCurrentTime();
   result = frame_process();
-  printf("decode count:%d\n", result);
+  printf("decode count:%d, take:%ld\n", result, getCurrentTime() - t1);
 
 Error:
   if (result < 0)

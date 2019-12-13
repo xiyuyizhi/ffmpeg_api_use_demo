@@ -144,6 +144,12 @@ enum Error_Code init_stream_decode_context(GlobalState *gState, StreamState *str
   {
     return OPEN_DECODE_CONTEXT_ERROR;
   }
+#ifdef USE_THREAD
+  if (streamType == AVMEDIA_TYPE_VIDEO)
+  {
+    streamState->codecCtx->thread_count = 3;
+  }
+#endif
   result = avcodec_open2(streamState->codecCtx, streamState->codec, NULL);
   if (result < 0)
   {

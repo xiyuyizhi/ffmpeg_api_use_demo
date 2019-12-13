@@ -23,7 +23,6 @@
 --disable-logging \
 --disable-videotoolbox \
 --disable-postproc \
---disable-pthreads \
 --disable-os2threads \
 --disable-w32threads \
 --disable-network \

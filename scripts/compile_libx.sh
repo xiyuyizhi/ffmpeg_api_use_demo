@@ -19,7 +19,7 @@ else
 
   sudo cp scripts/configure.sh ../FFmpeg/configure.sh
 
-  if [ ! -d "_media"];then
+  if [ ! -d "_media" ];then
     mkdir _media
     mkdir _temp
   fi
