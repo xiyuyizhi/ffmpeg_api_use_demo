@@ -1,18 +1,16 @@
 # ffmpeg_api_use_demo
 
-- [基本结构体](./_note/basic_struct.md)
+- [基本解封装、解码流程](./_note/basic.md)
 
-- [AVIOContext 自定义 IO]()
+- [关于提取音频 pcm 数据、视频 yuv 数据](./_note/decode.md)
 
-- [关于提取音频 pcm 数据]()
+- [AVIOContext 自定义 IO 和 seek](./_note/avio_context.md)
 
-- [ffmpeg 编译、调试]()
+- [ffmpeg 编译、emscripten 使用相关](./_note/compile.md)
 
-- [seek 的坑 。。。]()
+- [thread 在 WebAssembly 中使用]()
 
-- [c 内存管理相关]()
-
-- [pthread 在 WebAssembly 中使用]()
+- [内存管理相关]()
 
 ## run
 
