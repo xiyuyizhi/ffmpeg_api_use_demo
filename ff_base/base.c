@@ -72,7 +72,7 @@ static int read_packet(void *opaque, uint8_t *buf, int buf_size)
     printf("no buf_size pass to read_packet,%d,%d\n", buf_size, bd->size);
     return -1;
   }
-  printf("ptr in file:%p io.buffer ptr:%p, size:%ld,buf_size:%ld\n", bd->ptr, buf, bd->size, buf_size);
+  // printf("ptr in file:%p io.buffer ptr:%p, size:%ld,buf_size:%ld\n", bd->ptr, buf, bd->size, buf_size);
   memcpy(buf, bd->ptr, buf_size);
   bd->ptr += buf_size;
   bd->size -= buf_size; // left size in buffer

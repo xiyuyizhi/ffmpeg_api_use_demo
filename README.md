@@ -8,7 +8,7 @@
 
 - [ffmpeg 编译、emscripten 使用相关](./_note/compile.md)
 
-- [thread 在 WebAssembly 中使用]()
+- [thread 在 WebAssembly 中使用](./_note/thread.md)
 
 - [内存管理相关]()
 

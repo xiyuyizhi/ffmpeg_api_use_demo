@@ -13,4 +13,10 @@ Seek:
 	clang  ff_base/base.c ff_seek/seek.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
 
 Wasm:
-	clang  ff_base/base.c ff_wasm/decode.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
+	clang  ff_base/base.c ff_wasm/decode.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base  -v -g -o demo
+
+Wasm1:
+	clang  ff_base/base.c ff_wasm/decode.c  -lavutil  -lavformat -lavcodec  -lswscale  -Iff_base -v -g -o demo
+
+
+# -framework VideoToolbox -framework CoreVideo
