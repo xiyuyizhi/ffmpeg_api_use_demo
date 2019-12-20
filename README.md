@@ -10,7 +10,6 @@
 
 - [thread 在 WebAssembly 中使用](./_note/thread.md)
 
-- [内存管理相关]()
 
 ## run
 
