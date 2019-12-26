@@ -125,6 +125,40 @@ do {
 
 ```
 
+#### update
+
+视频解码获取到YUV数据后,前端可以直接通过webgl渲染,Y、U、V 三平面的linesize 不一定和 width、width/2、width/2相同(ffmpeg会做一些对齐操作,插入一些字节用来优化),测试发现对高清码率linesize和width一般不对应
+
+对于不对应的情形,需要把实际像素值提取出来
+``` 
+
+char *ybuffer = malloc(frame->width,frame->height);
+char *ubuffer = malloc(frame->width * frame->height / 4);
+char *vbuffer = malloc(frame->width * frame->height / 4);
+int width = frame->width;
+int height = frame->height;
+
+if(frame->lineszie[0] != width){
+  for( int i=0;i<height;i++){
+     memcpy(ybuffer + width * i, frame->data[0] + frame->linesize[0] * i, width);
+  }
+}
+
+if(frame->linesize[1] != width /2){
+  for(int i=0;i<height /2 ;i++){
+      memcpy(ubuffer + width /2 * i, frame->data[1] + frame->linesize[1] * i, width /2);
+      memcpy(vuffer + width /2* i, frame->data[2] + frame->linesize[2] * i, width/2);
+  }
+}
+
+// free yuv buffer when no use
+free(ybuffer);
+free(ubuffer);
+free(vbuffer);
+
+```
+
+
 ### 解码音频
 
 > aac 编码音频数据默认解码为 AV_SAMPLE_FMT_FLTP 格式,每个 channel 数据各占一个平面
@@ -179,3 +213,9 @@ uint8_t *translate_pcm(int data_size, AVFrame *frame, int sample_size)
   return bf;
 }
 ```
+
+
+
+
+
+
