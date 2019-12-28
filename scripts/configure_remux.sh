@@ -1,6 +1,6 @@
 #!/bin/sh
 
-emconfigure ./configure --prefix=$(pwd)/../ffmpeg_api_use_demo/libs2 \
+emconfigure ./configure --prefix=$(pwd)/../ffmpeg_api_use_demo/libs3 \
 --cc="emcc" --cxx="em++" --ar="emar" --cpu=generic --target-os=none --arch=x86_64 \
 --enable-small \
 --extra-cflags=-Os \
@@ -16,6 +16,7 @@ emconfigure ./configure --prefix=$(pwd)/../ffmpeg_api_use_demo/libs2 \
 --disable-podpages \
 --disable-txtpages \
 --disable-x86asm \
+--disable-swscale \
 --disable-devices \
 --disable-avdevice \
 --disable-swresample \
@@ -29,7 +30,11 @@ emconfigure ./configure --prefix=$(pwd)/../ffmpeg_api_use_demo/libs2 \
 --disable-network \
 --disable-debug \
 --disable-everything \
---enable-parser=hevc \
 --enable-protocol=data \
---enable-decoder=aac --enable-decoder=h264 --enable-decoder=hevc \
---enable-demuxer=mov --enable-demuxer=mpegts
+--enable-decoder=aac --enable-decoder=h264  \
+--enable-demuxer=mpegts \
+--enable-muxer=mp4 \
+--enable-parser=aac \
+--enable-parser=h264 \
+--enable-bsf=aac_adtstoasc \
+--enable-bsf=extract_extradata \
