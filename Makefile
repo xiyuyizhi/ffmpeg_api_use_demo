@@ -1,4 +1,4 @@
-default_target: Wasm
+default_target: Remux
 
 DecodeVideo:
 	clang  ff_base/base.c ff_decode_video/decode_video.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
@@ -15,8 +15,8 @@ Seek:
 Wasm:
 	clang  ff_base/base.c ff_wasm/decode.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base  -v -g -o demo
 
-Wasm1:
-	clang  ff_base/base.c ff_wasm/decode.c  -lavutil  -lavformat -lavcodec  -lswscale  -Iff_base -v -g -o demo
+Remux:
+	clang  ff_remux/remux.c  -lavutil  -lavformat -lavcodec -liconv -lz  -Llibs1/lib -Ilibs1/include -v -g -o demo
 
 
 # -framework VideoToolbox -framework CoreVideo

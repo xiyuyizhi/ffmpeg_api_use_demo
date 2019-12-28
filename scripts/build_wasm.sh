@@ -9,7 +9,7 @@ else
   emcc \
   ff_wasm/decode.c \
   ff_base/base.c \
-  -lavutil  -lavformat -lavcodec  -lswscale \
+  -lavformat -lavcodec  -lswscale  -lavutil \
   -Llibs2/lib -Ilibs2/include -Iff_base \
   -Os --closure 1 \
   -s ENVIRONMENT=worker \

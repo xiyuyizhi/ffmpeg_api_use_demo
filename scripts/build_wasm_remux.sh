@@ -8,10 +8,9 @@ if [  `echo $path | grep "\/scripts"` ];then
 else
   emcc \
   ff_remux/remux.c \
-  ff_base/base.c \
-  -lavutil  -lavformat -lavcodec  \
-  -Llibs3/lib -Ilibs3/include -Iff_base \
-  -Os --closure 1 \
+  -lavformat -lavcodec -lavutil  \
+  -Llibs3/lib -Ilibs3/include \
+  -Os \
   -s ENVIRONMENT=worker \
   -s MODULARIZE=1 \
   -s EXPORT_NAME=m \
@@ -20,5 +19,5 @@ else
   -s EXPORTED_FUNCTIONS='["_init_buffer","_process"]' \
   -s EXTRA_EXPORTED_RUNTIME_METHODS='["addFunction"]' \
   -s RESERVED_FUNCTION_POINTERS=20 \
-  -o ff_remux/remux.js
+  -o server/remux.js
 fi
