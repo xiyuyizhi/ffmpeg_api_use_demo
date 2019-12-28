@@ -28,7 +28,7 @@
 --disable-network \
 --disable-debug \
 --disable-everything \
---disable-parser=hevc \
+--enable-parser=hevc \
 --enable-protocol=data \
 --enable-protocol=file \
 --enable-decoder=aac --enable-decoder=h264 --enable-decoder=hevc \

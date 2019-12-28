@@ -10,6 +10,7 @@
 
 - [thread 在 WebAssembly 中使用](./_note/thread.md)
 
+- [remux](./_note/remux.md)
 
 ## run
 
