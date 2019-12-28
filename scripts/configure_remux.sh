@@ -31,7 +31,7 @@ emconfigure ./configure --prefix=$(pwd)/../ffmpeg_api_use_demo/libs3 \
 --disable-debug \
 --disable-everything \
 --enable-protocol=data \
---enable-decoder=aac --enable-decoder=h264  \
+--enable-decoder=aac --enable-decoder=h264 \
 --enable-demuxer=mpegts \
 --enable-muxer=mp4 \
 --enable-parser=aac \
