@@ -3,7 +3,7 @@
 #include "libavutil/avutil.h"
 #include "libavutil/timestamp.h"
 
-// #define MAIN
+#define MAIN
 #define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
 #define IO_CTX_BUFFER_SIZE 4096 * 8
 
@@ -291,6 +291,9 @@ int init_buffer(char *buf, size_t buf_size)
 #ifdef MAIN
 int main(int argc, char **argv)
 {
+
+  printf("%d  ,%d ,%d , %d ,%d ,%d \n", sizeof(short), sizeof(int), sizeof(long), sizeof(float), sizeof(double), sizeof(long double));
+
   if (argc < 2)
   {
     printf("Usage: ./demo ts_file_path\n");

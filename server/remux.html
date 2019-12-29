@@ -1,0 +1,79 @@
+<html>
+  <head></head>
+  <body>
+    <div>
+      <input style="width:500px" placeholder="ts url" /> <button>load</button>
+    </div>
+  </body>
+  <script>
+    const input = document.querySelector('input');
+    const button = document.querySelector('button');
+    const worker = new Worker('./remux-worker.js');
+    let url;
+
+    input.addEventListener('change', e => {
+      url = e.target.value;
+    });
+
+    button.addEventListener('click', e => {
+      if (!url) return;
+      load(url);
+    });
+
+    worker.addEventListener('message', e => {
+      const { data, type } = e.data;
+      switch (type) {
+        case 'wasmInit':
+          worker.postMessage({ type: 'malloc' });
+          break;
+        case 'mp4':
+          play(data);
+          break;
+        case 'error':
+          throw new Error(data);
+          break;
+      }
+    });
+
+    function play(buffer) {
+      let video = document.querySelector('video');
+      if (!video) {
+        video = document.createElement('video');
+        video.style.width = '600px';
+        document.body.appendChild(video);
+      }
+      if (video.src) {
+        URL.revokeObjectURL(video.src);
+        video.src = null;
+        video.load();
+      }
+      video.src = URL.createObjectURL(
+        new Blob([buffer], { type: 'video/mp4' })
+      );
+      video.play();
+    }
+
+    function load(url) {
+      fetch(url)
+        .then(res => {
+          if (res.status >= 200 && res.status < 300) {
+            return res.arrayBuffer();
+          }
+          throw res.statusText;
+        })
+        .then(buffer => {
+          worker.postMessage(
+            {
+              type: 'remux',
+              buffer
+            },
+            [buffer]
+          );
+        })
+        .catch(e => {
+          console.log('Error:', e);
+        });
+    }
+    window.load = load;
+  </script>
+</html>

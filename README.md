@@ -16,9 +16,9 @@
 
 ```
  1. // 编译ffmpeg 静态库
-  sh scripts/compile_libx.sh
+  sudo sh scripts/compile_libx.sh
 
- 2. make //指定target 生成可执行文件
+ 2. make // 修改Makefile, 指定target 生成可执行文件
 
  3. ./demo _media/xx.ts xxx
 
@@ -30,6 +30,9 @@
 
 ```
   1. // 编译用于webassembly 的ffmpeg 静态库
-    sh scripts/comile_libx_emcc.sh
+   sudo sh scripts/comile_libx_emcc.sh
+
+  2. // build wasm
+   sudo sh scripts/build_xxxx
 
 ```
