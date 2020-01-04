@@ -26,7 +26,7 @@ self.addEventListener("message", e => {
       const buffer = e.data.buffer;
 
       if (buffer.byteLength > outputSize) {
-        throw new Error("file too big");
+        self.postMessage({type: "error", data: "file too big"})
         return;
       }
 

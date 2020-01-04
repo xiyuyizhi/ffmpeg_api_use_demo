@@ -4,12 +4,20 @@
     <div>
       <input style="width:500px" placeholder="ts url" /> <button>load</button>
     </div>
+    <div>
+      <input type="file" id="file" />
+    </div>
   </body>
   <script>
     const input = document.querySelector('input');
     const button = document.querySelector('button');
+    const fileEle = document.querySelector('#file');
     const worker = new Worker('./remux-worker.js');
-    let url;
+    let url = `
+
+    https://valipl-vip.cp31.ott.cibntv.net/67756D6080932713CFC02204E/03000900005E0FD5091B8FCB6A777CCEA46A93-8D49-4BA7-AA23-EF8EC27A8D4E-00156.ts?ccode=0502&duration=2009&expire=18000&psid=9872deb219bc28f5fe927021c59823e3&ups_client_netip=7b764a2d&ups_ts=1578140503&ups_userid=1356499036&utid=0WvpFV6B4nsCAWw9tVhJyi6W&vid=XNDQ1Nzg5NTUyMA&sm=1&operate_type=1&dre=u38&si=78&iv=1&s=3d167d3aefbfbd1f11ef&bc=2&vkey=A03f64b1ba8304dc4d26d8d60ec1749b0
+
+        `;
 
     input.addEventListener('change', e => {
       url = e.target.value;
@@ -18,6 +26,24 @@
     button.addEventListener('click', e => {
       if (!url) return;
       load(url);
+    });
+
+    fileEle.addEventListener('change', e => {
+      let file = e.target.files[0];
+
+      let reader = new FileReader();
+
+      reader.onload = () => {
+        worker.postMessage(
+          {
+            type: 'remux',
+            buffer: reader.result
+          },
+          [reader.result]
+        );
+      };
+      reader.readAsArrayBuffer(file);
+      e.target.value = '';
     });
 
     worker.addEventListener('message', e => {
@@ -30,6 +56,7 @@
           play(data);
           break;
         case 'error':
+          alert('Error: ' + data);
           throw new Error(data);
           break;
       }
