@@ -12,12 +12,6 @@
 
 - [remux](./_note/remux.md)
 
-- [ffplay 源码笔记]()
-
-- [Introduction to Parallel Computing (翻译)]()
-
-- [POSIX Threads Programming (翻译)]()
-
 ## run
 
 ```
