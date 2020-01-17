@@ -29,6 +29,8 @@
 ## run wasm
 
 ```
+  先注释掉 base.h中 #define MAIN_RUN
+  
   1. // 编译用于webassembly 的ffmpeg 静态库
    sudo sh scripts/comile_libx_emcc.sh
 
