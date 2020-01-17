@@ -2,12 +2,16 @@
 
 #define IO_CTX_BUFFER_SIZE 4096 * 4
 
+#ifdef MAIN_RUN
 long getCurrentTime()
 {
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
+#endif
+
+av_image_alloc();
 
 int remove_all_temp_rgb(char *s)
 {
