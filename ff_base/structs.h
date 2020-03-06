@@ -5,9 +5,10 @@
 #include "libavcodec/avcodec.h"
 #include "libswscale/swscale.h"
 #include "libavutil/avutil.h"
+#include "sonic.h"
 
 typedef void (*VideoFrameCallback)(unsigned char *buff, int size, int width, int height, int64_t pts);
-typedef void (*AudioFrameCallback)(unsigned char *buff, int size, int64_t pts);
+typedef void (*AudioFrameCallback)(unsigned char *buff, int size, int64_t pts, int nbSamples, int sampleSize);
 typedef void (*VideoMetadataCallback)(int width, int height, int profile, int level, int timescale, int64_t start_time);
 typedef void (*AudioMetadataCallback)(int channels, int sample_rate, int timescale, int64_t start_time);
 
@@ -56,6 +57,20 @@ typedef struct _StreamState
   AVStream *stream;
   int streamIndex;
 } StreamState;
+
+typedef struct _PcmData
+{
+  uint8_t *pcmBuffer;
+  uint8_t *outPcmBuffer;
+  size_t pcmBufferSize;
+  size_t outPcmBufferSize;
+  size_t nbSamples;
+  size_t outNbSamples;
+  int sampleSize;
+  int channels;
+  float rate;
+  sonicStream sStream;
+} PcmData;
 
 enum Error_Code
 {

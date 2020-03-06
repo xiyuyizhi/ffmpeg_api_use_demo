@@ -273,7 +273,7 @@ int resolve_audio_frame(GlobalState *gState, AVCodecContext *decodeCtx, AVFrame 
       uint8_t *bf = translate_pcm(data_size, frame, sample_size);
       if (gState->audioCallback)
       {
-        gState->audioCallback(bf, data_size, frame->pts);
+        gState->audioCallback(bf, data_size, frame->pts, frame->nb_samples, sample_size);
       }
       av_free(bf);
     }

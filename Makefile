@@ -1,10 +1,13 @@
-default_target: Remux
+default_target: AudioSonic
 
 DecodeVideo:
 	clang  ff_base/base.c ff_decode_video/decode_video.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
 
 DecodeAudio:
 	clang  ff_base/base.c ff_decode_audio/decode_audio.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
+
+AudioSonic:
+	clang  ff_base/base.c ff_base/sonic.c ff_playbackrate/decode_audio.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
 
 CustomIo:
 	clang  ff_base/base.c ff_custom_io/custom_io.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
