@@ -1,4 +1,7 @@
-default_target: AudioSonic
+default_target: FlvLive
+
+FlvLive:
+	clang  ff_base/base.c ff_live/flv_live.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
 
 DecodeVideo:
 	clang  ff_base/base.c ff_decode_video/decode_video.c  -lavutil  -lavformat -lavcodec  -lswscale -liconv -lz  -Llibs1/lib -Ilibs1/include -Iff_base -v -g -o demo
