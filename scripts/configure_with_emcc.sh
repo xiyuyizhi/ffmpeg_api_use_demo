@@ -32,4 +32,8 @@ emconfigure ./configure --prefix=$(pwd)/../ffmpeg_api_use_demo/libs2 \
 --enable-parser=hevc \
 --enable-protocol=data \
 --enable-decoder=aac --enable-decoder=h264 --enable-decoder=hevc \
---enable-demuxer=mov --enable-demuxer=mpegts
+--enable-demuxer=mov --enable-demuxer=mpegts --enable-demuxer=flv \
+--enable-parser=aac \
+--enable-parser=h264 \
+--enable-bsf=aac_adtstoasc \
+--enable-bsf=extract_extradata \

@@ -32,7 +32,7 @@
 --enable-protocol=data \
 --enable-protocol=file \
 --enable-decoder=aac --enable-decoder=h264 --enable-decoder=hevc \
---enable-demuxer=mov --enable-demuxer=mpegts \
+--enable-demuxer=mov --enable-demuxer=mpegts --enable-demuxer=flv \
 --enable-muxer=mp4 \
 --enable-parser=aac \
 --enable-parser=h264 \

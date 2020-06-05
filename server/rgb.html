@@ -1,11 +1,11 @@
 <html>
   <head></head>
   <body>
-    <canvas style="width: 500px"></canvas>
+    <canvas style="width: 500px;"></canvas>
   </body>
   <script>
-    const width = 1920;
-    const height = 1080;
+    const width = 1024;
+    const height = 576;
     const canvas = document.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     const pts = location.search.slice(1);
@@ -15,14 +15,15 @@
     const d = imageData.data;
 
     fetch(`../_temp/${pts}.rgb`)
-      .then(res => {
+      .then((res) => {
         if (res.status >= 200 && res.status < 300) {
           return res;
         }
         throw new Error(res.statusText);
       })
-      .then(res => res.arrayBuffer())
-      .then(buffer => {
+      .then((res) => res.arrayBuffer())
+      .then((buffer) => {
+        console.log(buffer);
         const uint8 = new Uint8Array(buffer);
         for (let i = 0, len = buffer.byteLength; i < len; i++) {
           d[i] = uint8[i];
