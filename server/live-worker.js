@@ -2,14 +2,33 @@ importScripts('../libs/live-decode.js');
 
 function video_meta_callback(width, height, timescale, startTime) {
   console.log(
-    `width=${width} , height=${height} , timescale=${timescale}  , startTime=${startTime}`
+    `////////// width=${width} , height=${height} , timescale=${timescale}  , startTime=${startTime} ////////`
   );
+  self.postMessage({
+    type: 'metadata',
+    metaInfo: {
+      width,
+      height,
+      timescale,
+      startTime,
+    },
+  });
 }
 
 function video_frame_callback(bf, u, v, width, height, size, pts) {
-  const rgb = Module.HEAPU8.subarray(bf, bf + size);
-  const buffer = new Uint8Array(rgb);
-  console.log(width, height, size, pts);
+  const rgba = Module.HEAPU8.subarray(bf, bf + size);
+  const buffer = new Uint8Array(rgba);
+  self.postMessage(
+    {
+      type: 'frame',
+      frameInfo: {
+        rgba,
+        pts,
+      },
+    },
+    [buffer.buffer]
+  );
+  // console.log(width, height, size, pts);
 }
 
 const Module = m({
@@ -19,7 +38,7 @@ const Module = m({
     }
   },
 });
-console.log(Module);
+
 const cb1 = Module.addFunction(video_meta_callback);
 const cb2 = Module.addFunction(video_frame_callback);
 
@@ -50,6 +69,7 @@ self.addEventListener('message', (e) => {
       }
       Module._do_read_pkts(0);
       Module._decodeVideoFrame();
+      self.postMessage({ type: 'decodeFinish' });
       break;
     case 'clean':
       Module._clean();
