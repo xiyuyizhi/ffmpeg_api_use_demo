@@ -102,6 +102,53 @@ avcodec_open2(decodeCtx, decoder, NULL);
 
 生成可 debug 进 ffmpeg 源码的静态库
 
+vscode 中配置:
+
+1. 安装 codeLLDB 插件 (macos)
+
+```js
+
+/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code --install-extension path_of_codelldb-x86_64-darwin.vsix
+
+```
+
+2. .vscode/launch.json
+
+```js
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "debug",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo",
+      "args": ["${workspaceFolder}/_media/1.flv"],
+      "stopOnEntry": false,
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "terminal": "external",
+      "preLaunchTask": "make"
+    }
+  ]
+}
+
+.vscode/tasks.json
+
+{
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "make",
+      "command": "make"
+    }
+  ],
+  "version": "2.0.0"
+}
+
+
+```
+
 ### 静态库使用
 
 源代码编译时指定依赖的 ffmepg 静态库头文件及 libx 位置

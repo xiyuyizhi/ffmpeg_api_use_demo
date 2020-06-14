@@ -10,7 +10,7 @@
 
 - [thread 在 WebAssembly 中使用](./_note/thread.md)
 
-- [flv 直播流 处理]()
+- [flv 直播流 处理](./_note/live.md)
 
 - [remux](./_note/remux.md)
 
@@ -32,7 +32,7 @@
 
 ```
   先注释掉 base.h中 #define MAIN_RUN
-  
+
   1. // 编译用于webassembly 的ffmpeg 静态库
    sudo sh scripts/comile_libx_emcc.sh
 
