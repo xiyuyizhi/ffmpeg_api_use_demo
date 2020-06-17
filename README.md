@@ -14,6 +14,8 @@
 
 - [remux](./_note/remux.md)
 
+- [command](./_note/command.md)
+
 ## run
 
 ```
